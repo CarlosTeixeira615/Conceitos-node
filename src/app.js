@@ -52,9 +52,33 @@ app.delete("/repositories/:id", (req, res) => {
   repositories.splice(projectIndex, 1)
   return res.status(204).send();
 });
+app.post("/repositories/:id/like", (request, response) => {
+  const {id} = request.params;
+  const repositoryIndex = repositories.findIndex(repository => repository.id == id);
+  if (repositoryIndex < 0 ){
+    return response.status(400).json({error:'should not be able to update repository likes manually'});
+  }
+  else{
+    var title = (repositories[repositoryIndex].title);
+    var url = (repositories[repositoryIndex].url);
+    var techs = (repositories[repositoryIndex].techs);
+    var likes = (repositories[repositoryIndex].likes);
 
-app.post("/repositories/:id/like",  (req, res) => {
+    like = parseInt(likes);
+
+    if (isNaN(likes) === true || like === 'undefined') {
+      likes = 0;
+      likes = likes + 1;
+    } 
+    else {
+      likes = likes + 1;
+    }
+
+  }
   
+  const repository = {id, title, url, techs, likes};
+  repositories[repositoryIndex] = repository;
+  return response.json(repository);
 });
   
 module.exports = app;
